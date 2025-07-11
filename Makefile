@@ -1,4 +1,4 @@
-CONTAINER_ID := $(shell docker ps --filter name=momentum-trading-algo_trading-algo --format '{{.ID}}')
+CONTAINER_ID := $(shell docker ps --filter name=etf-trend-algo_etf-trend-algo --format '{{.ID}}')
 
 shell:
 	docker exec -it $(CONTAINER_ID) bash
