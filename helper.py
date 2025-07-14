@@ -41,6 +41,7 @@ def price_history(api, ticker, start_date, end_date, print_test=False):
             TimeFrame.Day,
             start_date.strftime("%Y-%m-%d"),
             end_date.strftime("%Y-%m-%d"),
+            adjustment="all",
         )
     except TypeError as te:
         log("{}\n".format(te), "error")
