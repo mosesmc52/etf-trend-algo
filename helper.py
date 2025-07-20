@@ -7,6 +7,7 @@ import sqlalchemy
 from alpaca_trade_api.rest import TimeFrame
 from dateutil import parser as time_parser
 from log import log
+from pandas.tseries.offsets import BDay
 
 
 def str2bool(value):
