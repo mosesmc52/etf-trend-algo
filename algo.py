@@ -58,7 +58,7 @@ db_session = sqlalchemy.orm.Session(bind=engine)
 market_history = history(
     db_session=db_session,
     tickers=[config["model"]["market"]],
-    days=config["model"]["tailing_window"],
+    trading_days=config["model"]["tailing_window"],
 )
 
 
@@ -123,7 +123,7 @@ else:
     cash_history = history(
         db_session=db_session,
         tickers=[config["model"]["cash"]],
-        days=config["model"]["tailing_window"],
+        trading_days=config["model"]["tailing_window"],
     )
 
     qty = share_quantity(
