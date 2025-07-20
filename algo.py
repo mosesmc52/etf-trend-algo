@@ -56,6 +56,7 @@ db_session = sqlalchemy.orm.Session(bind=engine)
 
 
 market_history = history(
+    engine=engine,
     db_session=db_session,
     tickers=[config["model"]["market"]],
     trading_days=config["model"]["tailing_window"],
@@ -121,6 +122,7 @@ if MACRO_YOY > 0.0 or is_bull_market:
 else:
 
     cash_history = history(
+        engine=engine,
         db_session=db_session,
         tickers=[config["model"]["cash"]],
         trading_days=config["model"]["tailing_window"],
