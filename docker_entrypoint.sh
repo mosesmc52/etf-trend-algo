@@ -1,30 +1,36 @@
 #!/bin/bash
+set -e
 
-# create sqllitedb
-echo "create sqllitedb"
+echo "🧱 Creating SQLite DB..."
 python -c '
-from database import ( init_db )
+from database import init_db
 init_db()
 '
-# ingest Equities
-echo "initial ingest historical data"
+
+echo "📥 Ingesting equities once..."
 python ingest.py
 
-# Start the run once job.
-echo "ETF Algo Docker container has been started"
+echo "📝 Creating cron log..."
+touch /var/log/cron.log
 
+echo "🌐 Exporting environment..."
 declare -p | grep -Ev 'BASHOPTS|BASH_VERSINFO|EUID|PPID|SHELLOPTS|UID' > /container.env
 
-echo "start" >> /var/log/cron.log 2>&1
-
-# Setup a cron schedule to run 1st of every month
-echo "SHELL=/bin/bash
+echo "📆 Writing scheduler..."
+cat <<EOF > /app/scheduler.txt
+SHELL=/bin/bash
 BASH_ENV=/container.env
-0 0 * * 3 cd /app/ && python ingest.py; python algo.py && /var/log/cron.log 2>&1
-# This extra line makes it a valid cron" > scheduler.txt
+PATH=/usr/local/bin:/usr/bin:/bin
+0 11 * * 3 cd /app && poetry run python ingest.py && poetry run python algo.py >> /var/log/cron.log 2>&1
 
-crontab scheduler.txt
-cron
+EOF
 
-touch /var/log/cron.log
-echo "running....."
+echo "📌 Installing crontab:"
+cat /app/scheduler.txt
+crontab /app/scheduler.txt
+
+echo "📋 Confirming crontab:"
+crontab -l
+
+echo "🚀 Starting cron..."
+cron -f
